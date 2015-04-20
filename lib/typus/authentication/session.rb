@@ -42,7 +42,8 @@ module Typus
       # Action is available on: edit, update, toggle and destroy
       #++
       def check_if_user_can_perform_action_on_user
-        is_current_user = (admin_user == @item)
+        user = @item
+        is_current_user = (admin_user == user)
         current_user_is_root = admin_user.is_root? && is_current_user
 
         case params[:action]
@@ -53,18 +54,18 @@ module Typus
         when 'toggle', 'destroy'
           not_allowed if admin_user.is_not_root? || current_user_is_root
         when 'update'
-          # Admin can update himself except setting the status to false!. Other
-          # users can update their profile as the attributes (role & status)
-          # are protected.
-          status_as_boolean = params[@object_name][:status] == '1' ? true : false
+          # Admin can update himself except setting his own status or role
+          status = params[@object_name][:status]
+          status_as_boolean = status == '1' ? true : false
 
-          status_changed = !(@item.status == status_as_boolean)
-          role_changed = !(@item.role == params[@object_name][:role])
+          status_changed = false
+          status_changed = user.status != status_as_boolean if status 
 
-          root_changed_his_status_or_role = current_user_is_root && (status_changed || role_changed)
+          role_changed = !(user.role == params[@object_name][:role])
+          user_changed_his_status_or_role =  is_current_user && (status_changed || role_changed)
+
           not_root_tries_to_change_another_user = admin_user.is_not_root? && !is_current_user
-
-          not_allowed if root_changed_his_status_or_role || not_root_tries_to_change_another_user
+          not_allowed if user_changed_his_status_or_role || not_root_tries_to_change_another_user
         end
       end
 

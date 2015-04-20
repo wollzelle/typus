@@ -111,8 +111,7 @@ class Admin::TypusUsersControllerTest < ActionController::TestCase
   test "editor should not be able to change his role" do
     editor_sign_in
     post :update, id: @typus_user.id, typus_user: { role: 'admin' }, _continue: true
-    assert_response :redirect
-    assert_redirected_to "/admin/typus_users/edit/#{@typus_user.id}"
+    assert_response :unprocessable_entity
     assert_equal "editor", @typus_user.reload.role
   end
 
