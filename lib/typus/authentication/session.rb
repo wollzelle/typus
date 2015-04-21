@@ -54,18 +54,10 @@ module Typus
         when 'toggle', 'destroy'
           not_allowed if admin_user.is_not_root? || current_user_is_root
         when 'update'
-          # Admin can update himself except setting his own status or role
-          status = params[@object_name][:status]
-          status_as_boolean = status == '1' ? true : false
-
-          status_changed = false
-          status_changed = user.status != status_as_boolean if status 
-
-          role_changed = !(user.role == params[@object_name][:role])
-          user_changed_his_status_or_role =  is_current_user && (status_changed || role_changed)
-
-          not_root_tries_to_change_another_user = admin_user.is_not_root? && !is_current_user
-          not_allowed if user_changed_his_status_or_role || not_root_tries_to_change_another_user
+          # Only real admins and the user itself can update...
+          not_allowed if admin_user.is_not_root? && !is_current_user
+          # run validations for roles & status in model
+          @item.user_performing_update = admin_user
         end
       end
 

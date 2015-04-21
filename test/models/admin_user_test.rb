@@ -41,9 +41,6 @@ class AdminUserTest < ActiveSupport::TestCase
     assert_equal 'is too short (minimum is 6 characters)', typus_user.errors[:password].first
     typus_user.password = '000000'
     assert typus_user.valid?
-    typus_user.password = ''
-    assert_not typus_user.valid?
-    assert_equal 'is too short (minimum is 6 characters)', typus_user.errors[:password].first
   end
 
 end
