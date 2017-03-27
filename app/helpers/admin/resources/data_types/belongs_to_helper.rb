@@ -27,7 +27,8 @@ module Admin::Resources::DataTypes::BelongsToHelper
 
     attribute_id = "#{@resource.name.underscore}_#{attribute}_id".gsub("/", "_")
 
-    render "admin/templates/belongs_to",
+    #render "admin/templates/belongs_to",
+    render get_template_for(@resource, related_fk.gsub("_id", ""), "belongs_to"),
            :attribute => attribute,
            :attribute_id => attribute_id,
            :form => form,
@@ -56,7 +57,7 @@ module Admin::Resources::DataTypes::BelongsToHelper
 
     options = {
       :controller => data.class.to_resource,
-      :action => params[:action],
+      :action => action_name,
       :id => data.id
     }
 

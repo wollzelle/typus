@@ -19,7 +19,7 @@ module Admin::Resources::TableHelper
       key = key.gsub(".", " ") if key.to_s.match(/\./)
       content = model.human_attribute_name(key)
 
-      if params[:action].eql?('index') && model.typus_options_for(:sortable)
+      if action_name.eql?('index') && model.typus_options_for(:sortable)
         association = model.reflect_on_association(key.to_sym)
         order_by = association ? association.foreign_key : key
 
@@ -32,7 +32,7 @@ module Admin::Resources::TableHelper
           switch = sort_order.last if params[:order_by].eql?(order_by)
           options = { :order_by => order_by, :sort_order => sort_order.first }
           message = [content, switch].compact.join(" ").html_safe
-          content = link_to(message, params.merge(options))
+          content = link_to(message, params.merge(options).permit!)
         end
       end
 
@@ -52,7 +52,7 @@ module Admin::Resources::TableHelper
     @resource_actions.map do |body, url, options, proc|
       next if proc && proc.respond_to?(:call) && proc.call(item) == false
       { :message => Typus::I18n.t(body),
-        :url => params.dup.cleanup.merge({ :controller => "/admin/#{model.to_resource}", :id => item.id }).merge(url),
+        :url => params.permit.merge({ :controller => "/admin/#{model.to_resource}", :id => item.id }).merge(url),
         :options => options }
     end
   end

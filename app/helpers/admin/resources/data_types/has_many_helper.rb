@@ -28,7 +28,7 @@ module Admin::Resources::DataTypes::HasManyHelper
                :add_new => build_add_new_for_has_many(@model_to_relate, field, options),
                :table => build_relationship_table }
 
-    render "admin/templates/has_many", locals
+    render get_template_for(@resource, field, "has_many"), locals
   end
 
   def build_add_new_for_has_many(klass, field, options = {})

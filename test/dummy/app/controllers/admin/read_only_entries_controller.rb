@@ -1,7 +1,7 @@
 class Admin::ReadOnlyEntriesController < Admin::ResourcesController
 
   def new
-    item_params = params.dup
+    item_params = params.to_h
     item_params.delete_if { |k, v| !@resource.columns.map(&:name).include?(k) }
     @item = @resource.new(item_params)
 

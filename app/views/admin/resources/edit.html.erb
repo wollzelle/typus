@@ -9,7 +9,7 @@
     <small><%= list_actions %></small>
   </h2>
 
-  <% if headless_mode? && params[:action] == 'edit' && flash.keys.include?('notice') && !params[:_input] %>
+  <% if headless_mode? && action_name == 'edit' && flash.keys.include?('notice') && !params[:_input] %>
     <%= javascript_tag do %>
       $(document).ready(function () {
         <% if params[:attribute] %>
@@ -27,7 +27,7 @@
   <%= admin_display_flash_message %>
   <%= render 'edit' %>
 
-  <% locals = { :options => params.dup.cleanup.merge!(:action => 'update') } %>
+  <% locals = { :options => params.to_h.cleanup.merge!(:action => 'update') } %>
   <%= render 'form', locals %>
 
   <%= typus_relationships unless headless_mode? %>

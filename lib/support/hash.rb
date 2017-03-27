@@ -1,6 +1,6 @@
 class Hash
 
-  def compact_blank
+  def cleanup_blank
     delete_if { |k, v| v.blank? }
   end
 

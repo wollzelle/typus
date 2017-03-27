@@ -8,11 +8,11 @@ class Admin::ResourcesController < Admin::BaseController
 
   Whitelist = [:edit, :update, :destroy, :toggle]
 
-  before_filter :get_model
-  before_filter :set_context
-  before_filter :get_object, :only => Whitelist + [:show]
-  before_filter :check_resource_ownership, :only => Whitelist
-  before_filter :check_if_user_can_perform_action_on_resources
+  before_action :get_model
+  before_action :set_context
+  before_action :get_object, :only => Whitelist + [:show]
+  before_action :check_resource_ownership, :only => Whitelist
+  before_action :check_if_user_can_perform_action_on_resources
 
   def index
     get_objects
@@ -38,7 +38,7 @@ class Admin::ResourcesController < Admin::BaseController
     @item = @resource.new(item_params_for_new)
 
     respond_to do |format|
-      format.html
+      format.html {render :new }
       format.json { render :json => @item }
     end
   end
@@ -156,7 +156,7 @@ class Admin::ResourcesController < Admin::BaseController
   end
 
   def fields
-    @resource.typus_fields_for(params[:action])
+    @resource.typus_fields_for(action_name)
   end
   helper_method :fields
 
@@ -197,7 +197,7 @@ class Admin::ResourcesController < Admin::BaseController
   end
 
   def redirect_on_success
-    path = params.dup.cleanup
+    path = params.to_h.cleanup
 
     options = if params[:_addanother]
       { :action => 'new', :id => nil }
@@ -207,7 +207,7 @@ class Admin::ResourcesController < Admin::BaseController
       { :action => nil, :id => nil }
     end
 
-    message = params[:action].eql?('create') ? "%{model} successfully created." : "%{model} successfully updated."
+    message = action_name.eql?('create') ? "%{model} successfully created." : "%{model} successfully updated."
     notice = Typus::I18n.t(message, :model => @resource.model_name.human)
 
     redirect_to path.merge!(options).compact.to_hash, :notice => notice
