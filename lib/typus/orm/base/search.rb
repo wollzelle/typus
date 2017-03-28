@@ -43,7 +43,7 @@ module Typus
         # param.
         def build_conditions(params)
           Array.new.tap do |conditions|
-            query_params = params.to_h
+            query_params = params.permit!.to_h
 
             query_params.reject! do |k, v|
               !model_fields.keys.include?(k.to_sym) &&
