@@ -52,7 +52,7 @@ module Admin::Resources::TableHelper
     @resource_actions.map do |body, url, options, proc|
       next if proc && proc.respond_to?(:call) && proc.call(item) == false
       { :message => Typus::I18n.t(body),
-        :url => params.permit.merge({ :controller => "/admin/#{model.to_resource}", :id => item.id }).merge(url),
+        :url => params.merge({ :controller => "/admin/#{model.to_resource}", :id => item.id }).merge(url).permit!,
         :options => options }
     end
   end
