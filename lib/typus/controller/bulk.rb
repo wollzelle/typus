@@ -33,21 +33,21 @@ module Typus
           else
             Typus::I18n.t("Items must be selected in order to perform actions on them. No items have been changed.")
           end
-          redirect_to :back, :notice => notice
+          redirect_back(fallback_location: admin_path, notice: notice)
         end
       end
 
       def bulk_destroy(ids)
         ids.each { |id| @resource.destroy(id) }
         notice = Typus::I18n.t("Successfully deleted #{ids.count} entries.")
-        redirect_to :back, :notice => notice
+        redirect_back(fallback_location: admin_path, notice: notice)
       end
       private :bulk_destroy
 
       def bulk_restore(ids)
         ids.each { |id| @resource.deleted.find(id).restore }
         notice = Typus::I18n.t("Successfully restored #{ids.count} entries.")
-        redirect_to :back, :notice => notice
+        redirect_back(fallback_location: admin_path, notice: notice)
       end
       private :bulk_restore
 

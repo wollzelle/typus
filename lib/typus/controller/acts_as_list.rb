@@ -17,7 +17,7 @@ module Typus
         if %w(move_to_top move_higher move_lower move_to_bottom).include?(params[:go])
           @item.send(params[:go])
           notice = Typus::I18n.t("%{model} successfully updated.", :model => @resource.model_name.human)
-          redirect_to :back, :notice => notice
+          redirect_back(fallback_location: admin_path, notice: notice)
         else
           not_allowed
         end

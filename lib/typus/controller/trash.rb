@@ -48,13 +48,13 @@ module Typus
           message = "%{resource} can't be recovered from trash."
         end
 
-        redirect_to :back, :notice => Typus::I18n.t(message, :resource => @resource.model_name.human)
+        redirect_back(fallback_location: admin_path, notice: Typus::I18n.t(message, :resource => @resource.model_name.human))
       end
 
       def wipe
         item = @resource.find_in_trash(params[:id])
         item.disable_trash { item.destroy }
-        redirect_to :back, :notice => Typus::I18n.t("%{resource} has been successfully removed from trash.", :resource => @resource.model_name.human)
+        redirect_back(fallback_location: admin_path, notice: Typus::I18n.t("%{resource} has been successfully removed from trash.", resource: @resource.model_name.human))
       end
 
       def set_deleted

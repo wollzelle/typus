@@ -103,7 +103,7 @@ class Admin::ResourcesController < Admin::BaseController
     else
       alert = @item.errors.full_messages
     end
-    redirect_to :back, :notice => notice, :alert => alert
+    redirect_back(fallback_location: admin_path, notice: notice, alert: alert)
   end
 
   def toggle
@@ -113,7 +113,7 @@ class Admin::ResourcesController < Admin::BaseController
       if @item.save
         format.html do
           notice = Typus::I18n.t("%{model} successfully updated.", :model => @resource.model_name.human)
-          redirect_to :back, :notice => notice
+          redirect_back(fallback_location: admin_path, notice: notice)
         end
         format.json { render :json => @item }
       else
